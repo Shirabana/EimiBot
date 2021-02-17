@@ -1,0 +1,26 @@
+[2021/02/17 17:37:59:977] (logs-testing) Yukari#1470: !e prune 10
+[2021/02/17 17:38:00:771] (logs-testing) Eimi#1916: Will not delete messages.
+[2021/02/17 17:38:01:562] (logs-testing) Yukari#1470: y
+[2021/02/17 17:38:02:397] (logs-testing) Eimi#1916: Are you sure you want to delete 10 lines? [Y/N]
+[2021/02/17 17:38:03:192] (logs-testing) Yukari#1470: !e prune 10
+[2021/02/17 17:38:06:457] (logs-testing) Eimi#1916: Will not delete messages.
+[2021/02/17 17:38:07:250] (logs-testing) Yukari#1470: y
+[2021/02/17 17:38:08:070] (logs-testing) Yukari#1470: y
+[2021/02/17 17:38:10:047] (logs-testing) Eimi#1916: Are you sure you want to delete 10 lines? [Y/N]
+[2021/02/17 17:38:10:827] (logs-testing) Yukari#1470: !e prune 10
+[2021/02/17 17:39:15:002] (logs-testing) Yukari#1470: !e prune 5
+[2021/02/17 17:39:15:392] (logs-testing) Eimi#1916: Deletion log for [2021/02/17 17:38:11:623]
+<1 images attached>
+[2021/02/17 17:39:15:782] (logs-testing) Yukari#1470: y
+[2021/02/17 17:39:16:173] (logs-testing) Eimi#1916: Are you sure you want to delete 10 lines? [Y/N]
+[2021/02/17 17:39:16:565] (logs-testing) Yukari#1470: y
+[2021/02/17 17:42:21:509] (guild-war-info) Yukari#1470: !e prune 10
+[2021/02/17 17:42:22:004] (guild-war-info) 🌸 Mystia 🌸#8755: Pro
+[2021/02/17 17:42:22:421] (guild-war-info) Yukari#1470: <:Aqua_Resistance:724449227748409394>
+[2021/02/17 17:42:22:818] (guild-war-info) Yukari#1470: it's my bot
+[2021/02/17 17:42:23:218] (guild-war-info) 🌸 Mystia 🌸#8755: I thought it was Eim alt
+[2021/02/17 17:42:27:220] (guild-war-info) Yukari#1470: !e prune
+[2021/02/17 17:42:27:595] (guild-war-info) 🌸 Mystia 🌸#8755: Wat
+[2021/02/17 17:42:27:984] (guild-war-info) Yukari#1470: wait
+[2021/02/17 17:42:29:176] (guild-war-info) Yukari#1470: !e prune
+[2021/02/17 17:42:29:547] (guild-war-info) Resu#6969: yab

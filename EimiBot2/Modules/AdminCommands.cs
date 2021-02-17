@@ -2,20 +2,23 @@
 using Discord.Commands;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
+using System;
+using System.Collections.Generic;
+using Discord.Addons.Interactive;
 
 namespace EimiBot2.Modules
 {
-    public class AdminCommands : ModuleBase<SocketCommandContext>
+    public class AdminCommands : InteractiveBase
     {
         private readonly Logger log = new Logger();
+        public bool ReplyStatus;
+        public string Prf;
         private string datasource;
         private string dbname;
         private string user;
         private string pass;
-        public string Prf { get; set; }
-        public bool ReplyStatus { get; set; }
 
-        private void obtainDatabaseInfo()
+        private void ObtainDatabaseInfo()
         {
             string[] lines;
 
@@ -35,6 +38,28 @@ namespace EimiBot2.Modules
             log.Info("Database info successfully retrieved.");
         }
 
+        private bool GetConfirmation(string response)
+        {
+            int next = 0;
+            TimeSpan delay = TimeSpan.FromSeconds(5);
+            log.Info("Response: " + response.ToString());
+
+            if (response != null || response.ToString() != "")
+            {
+
+                if (response.ToString().ToLower() == "yes" || response.ToString().ToLower() == "ye" || response.ToString().ToLower() == "y")
+                {
+                    return true;
+
+                }
+                else if (response.ToString().ToLower() == "nah" || response.ToString().ToLower() == "no" || response.ToString().ToLower() == "n")
+                {
+                    return false;
+                }
+            }
+            return false;
+        }
+
         [Command("prefix")]
         [Summary("Changes the prefix if there's an input")]
         [RequireUserPermission(GuildPermission.Administrator)]
@@ -43,7 +68,7 @@ namespace EimiBot2.Modules
         {
             log.Info("Prefix function booted up.");
 
-            obtainDatabaseInfo();
+            ObtainDatabaseInfo();
 
             string connectionString;
             connectionString = @"Data Source=" + datasource +";Initial Catalog=" + dbname + ";User ID=" + user + ";Password=" + pass + ";";
@@ -106,5 +131,84 @@ namespace EimiBot2.Modules
             }
 
         }
+
+        [Command("prune", RunMode = RunMode.Async)]
+        [Summary("Prunes the messages in the channel and places them into a log if a value is added")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        [RequireUserPermission(GuildPermission.ManageGuild)]
+        public async Task DeleteAndLog(params string[] args)
+        {
+            IEnumerable<IMessage> message = await Context.Channel.GetMessagesAsync().FlattenAsync(); ;
+            int result;
+            bool validReturn;
+            string replyMessage = "";
+
+            log.Info("Starting up the Delete and Log function.");
+
+            if (args[0] != null && args[0] != "")
+            {
+                if (int.TryParse(args[0], out result) && Convert.ToInt32(args[0]) != 0)
+                {
+                    var input = result;
+                    message = await Context.Channel.GetMessagesAsync(Convert.ToInt32(input)).FlattenAsync();
+                    replyMessage = "Are you sure you want to delete " + input + " lines? [Y/N]";
+                    validReturn = true;
+                }
+                else
+                {
+                    await ReplyAsync("Invalid input.");
+                    validReturn = false;
+                }
+            }
+            else
+            {
+                replyMessage = "Are you sure you want to delete everything? [Y/N]";
+                validReturn = true;
+            }
+
+            if (validReturn == true)
+            {
+                // Get the confirmation of the user
+                log.Info("Getting confirmation to delete");
+                await ReplyAsync(replyMessage);
+                var response = await NextMessageAsync();
+                AdminCommands ac = new AdminCommands();
+                log.Info("Immediately after");
+
+                if (ac.GetConfirmation(response.ToString()) == true)
+                {
+                    log.Info("Deleting and logging messages...");
+
+                    FileInteraction fi = new FileInteraction();
+                    
+                    foreach (var item in message)
+                    {
+                        if (item.Attachments.Count > 0)
+                        {
+                            fi.Logged("(" + item.Channel + ") " + item.Author + ": " + item.Content + "\n<" + item.Attachments.Count + " item(s) attached>");
+                        }
+                        else
+                        {
+                            fi.Logged("(" + item.Channel + ") " + item.Author + ": " + item.Content);
+                        }
+                    
+                        await item.DeleteAsync();
+                        await Task.Delay(100);
+                    }
+
+                    string location = @"C:\Users\Amagi\source\repos\EimiBot\EimiBot2\logs\" + fi.GetDate() + "-deletionlogs.txt";
+
+                    await Context.Channel.SendFileAsync(location, "Deletion log for " + fi.GetTimestamp());
+                }
+                else
+                {
+                    log.Info("No messages deleted and logged.");
+                    await ReplyAsync("Will not delete messages.");
+                }
+            }
+
+            
+        }
+
     }
 }

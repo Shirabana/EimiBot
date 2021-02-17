@@ -146,6 +146,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileInteraction.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Modules\AdminCommands.cs" />
     <Compile Include="Modules\InteractionClass.cs" />
