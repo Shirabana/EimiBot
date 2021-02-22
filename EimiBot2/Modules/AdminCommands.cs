@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using Discord.Addons.Interactive;
+using MySql.Data.MySqlClient.Memcached;
 
 namespace EimiBot2.Modules
 {
@@ -211,15 +212,22 @@ namespace EimiBot2.Modules
                     {
                         if (item.Attachments.Count > 0)
                         {
-                            fi.Logged("(" + item.Channel + ") " + item.Author + ": " + item.Content + "\n<" + item.Attachments.Count + " item(s) attached>");
+                            fi.Logged("[" + item.Timestamp + "] " + "(" + item.Channel + ") " + item.Author + ": " + item.Content + "\n<" + item.Attachments.Count + " item(s) attached>");
                         }
                         else
                         {
-                            fi.Logged("(" + item.Channel + ") " + item.Author + ": " + item.Content);
+                            fi.Logged("[" + item.Timestamp + "] " + "(" + item.Channel + ") " + item.Author + ": " + item.Content);
                         }
-                    
-                        await item.DeleteAsync();
-                        await Task.Delay(100);
+
+                        if (item.Content.Contains("Deletion log") && item.Author.IsBot == true)
+                        {
+                            log.Debug("Ignoring bot message");
+                        }
+                        else
+                        {
+                            await item.DeleteAsync();
+                            await Task.Delay(100);
+                        }
                     }
 
                     string location = @"C:\Users\Amagi\source\repos\EimiBot\EimiBot2\logs\" + fi.GetDate() + "-deletionlogs.txt";

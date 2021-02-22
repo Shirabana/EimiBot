@@ -22,7 +22,7 @@ namespace EimiBot2
         {
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\Amagi\source\repos\EimiBot\EimiBot2\logs\" + GetDate() + "-deletionlogs.txt", true))
             {
-                string toWrite = GetTimestamp() + lines;
+                string toWrite = lines;
                 Console.WriteLine(toWrite);
                 file.WriteLine(toWrite);
             }
