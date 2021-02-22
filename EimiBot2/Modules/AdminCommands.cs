@@ -34,14 +34,29 @@ namespace EimiBot2.Modules
             lines = file.ReadLine().Split('=');
             pass = lines[1];
 
+            log.Debug($"Data Source: {datasource}; DB Name: {dbname}; User: {user};");
+
             file.Close();
             log.Info("Database info successfully retrieved.");
         }
 
+        public bool GetInput(string response)
+        {
+            log.Info("Prefix Response:" + response.ToString());
+
+            if (response != null || response.ToString() != "")
+            {
+                Prf = response.ToString();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         private bool GetConfirmation(string response)
         {
-            int next = 0;
-            TimeSpan delay = TimeSpan.FromSeconds(5);
             log.Info("Response: " + response.ToString());
 
             if (response != null || response.ToString() != "")
@@ -60,7 +75,7 @@ namespace EimiBot2.Modules
             return false;
         }
 
-        [Command("prefix")]
+        [Command("prefix", RunMode = RunMode.Async)]
         [Summary("Changes the prefix if there's an input")]
         [RequireUserPermission(GuildPermission.Administrator)]
         [RequireUserPermission(GuildPermission.ManageGuild)]
@@ -73,10 +88,14 @@ namespace EimiBot2.Modules
             string connectionString;
             connectionString = @"Data Source=" + datasource +";Initial Catalog=" + dbname + ";User ID=" + user + ";Password=" + pass + ";";
 
+            log.Debug(connectionString);
+
             // Access the database
             using (SqlConnection con = new SqlConnection(connectionString))
             {
                 con.Open();
+
+                log.Info("Database connection established.");
 
                 var guild = Context.Guild.Id;
 
@@ -100,8 +119,9 @@ namespace EimiBot2.Modules
             await ReplyAsync("The current prefix for the bot is: ``" + Prf + "``. Enter a new prefix, otherwise leave blank to leave as is.");
 
             // Get the input of the user
-            InteractionClass ic = new InteractionClass();
-            await ic.GetInput();
+            var response = await NextMessageAsync();
+            AdminCommands ac = new AdminCommands();
+            ac.GetInput(response.ToString());
 
             if (ReplyStatus == false)
             {
@@ -133,7 +153,7 @@ namespace EimiBot2.Modules
         }
 
         [Command("prune", RunMode = RunMode.Async)]
-        [Summary("Prunes the messages in the channel and places them into a log if a value is added")]
+        [Summary("Prunes the messages (max 100) in the channel and places them into a log if a value is added")]
         [RequireUserPermission(GuildPermission.Administrator)]
         [RequireUserPermission(GuildPermission.ManageGuild)]
         public async Task DeleteAndLog(params string[] args)
@@ -145,11 +165,17 @@ namespace EimiBot2.Modules
 
             log.Info("Starting up the Delete and Log function.");
 
-            if (args[0] != null && args[0] != "")
+            if (args != null && args[0] != null && args[0] != "")
             {
                 if (int.TryParse(args[0], out result) && Convert.ToInt32(args[0]) != 0)
                 {
                     var input = result;
+                    if (input > 100)
+                    {
+                        // Max number
+                        input = 100;
+                    }
+
                     message = await Context.Channel.GetMessagesAsync(Convert.ToInt32(input)).FlattenAsync();
                     replyMessage = "Are you sure you want to delete " + input + " lines? [Y/N]";
                     validReturn = true;
@@ -162,7 +188,7 @@ namespace EimiBot2.Modules
             }
             else
             {
-                replyMessage = "Are you sure you want to delete everything? [Y/N]";
+                replyMessage = "Are you sure you want to delete 100 lines? [Y/N]";
                 validReturn = true;
             }
 
@@ -206,8 +232,7 @@ namespace EimiBot2.Modules
                     await ReplyAsync("Will not delete messages.");
                 }
             }
-
-            
+      
         }
 
     }

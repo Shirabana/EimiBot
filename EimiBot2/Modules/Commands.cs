@@ -11,8 +11,6 @@ namespace EimiBot2.Modules
 
         [Command("help")]
         [Summary("Displays the commands of the bot")]
-        [RequireUserPermission(GuildPermission.Administrator)]
-        [RequireUserPermission(GuildPermission.ManageGuild)]
         public async Task Help()
         {
             //string avatarLocation = @"C:\Users\Amagi\source\repos\EimiBot\EimiBot2\images\bot\ava.jpg";
@@ -37,8 +35,13 @@ namespace EimiBot2.Modules
                 .WithName("Fun")
                 .WithValue("・bento / bentou\n・ping");
 
+            var admin = new EmbedFieldBuilder()
+                .WithName("Admin")
+                .WithValue("・prefix\n・prune");
+
             eb.AddField(link);
             eb.AddField(fun);
+            eb.AddField(admin);
             eb.WithTitle("List of Commands: (!e)");
             eb.WithAuthor(ab);
             eb.WithFooter(fb);
@@ -47,8 +50,6 @@ namespace EimiBot2.Modules
         }
 
         [Command("ping")]
-        [RequireUserPermission(GuildPermission.Administrator)]
-        [RequireUserPermission(GuildPermission.ManageGuild)]
         public async Task Ping()
         {
             log.Info("Ping!");
@@ -57,8 +58,6 @@ namespace EimiBot2.Modules
         }
 
         [Command("bento")]
-        [RequireUserPermission(GuildPermission.Administrator)]
-        [RequireUserPermission(GuildPermission.ManageGuild)]
         public async Task Bentou()
         {
             Random rand = new Random();
@@ -73,8 +72,6 @@ namespace EimiBot2.Modules
         }
 
         [Command("bentou")]
-        [RequireUserPermission(GuildPermission.Administrator)]
-        [RequireUserPermission(GuildPermission.ManageGuild)]
         public async Task BentouR()
         {
             await Bentou();

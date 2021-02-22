@@ -349,3 +349,31 @@
 [2021/02/17 17:50:01:932] [ERROR] User requires guild permission Administrator.
 [2021/02/17 17:50:02:210] [INFO] Help booted up
 [2021/02/17 17:50:07:550] [INFO] Ping!
+[2021/02/17 21:02:43:012] [INFO] 21:02:43 Gateway     System.Exception: Server requested a reconnect
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Discord.ConnectionManager.<>c__DisplayClass29_0.<<StartAsync>b__0>d.MoveNext()
+[2021/02/17 21:02:43:045] [INFO] 21:02:43 Gateway     Disconnecting
+[2021/02/17 21:02:43:096] [INFO] 21:02:43 Gateway     Disconnected
+[2021/02/17 21:02:44:104] [INFO] 21:02:44 Gateway     Connecting
+[2021/02/17 21:02:44:856] [INFO] 21:02:44 Gateway     Failed to resume previous session
+[2021/02/17 21:02:45:199] [INFO] 21:02:45 Gateway     Connected
+[2021/02/17 21:02:45:696] [INFO] 21:02:45 Gateway     Ready
+[2021/02/17 21:19:24:069] [INFO] 21:19:24 Gateway     System.Exception: WebSocket connection was closed ---> System.Net.WebSockets.WebSocketException: The remote party closed the WebSocket connection without completing the close handshake.
+   at System.Net.WebSockets.WebSocketBase.WebSocketOperation.<Process>d__19.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Net.WebSockets.WebSocketBase.<ReceiveAsyncCore>d__45.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Discord.Net.WebSockets.DefaultWebSocketClient.<RunAsync>d__34.MoveNext()
+   --- End of inner exception stack trace ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Discord.ConnectionManager.<>c__DisplayClass29_0.<<StartAsync>b__0>d.MoveNext()
+[2021/02/17 21:19:24:087] [INFO] 21:19:24 Gateway     Disconnecting
+[2021/02/17 21:19:24:096] [INFO] 21:19:24 Gateway     Disconnected
+[2021/02/17 21:19:25:105] [INFO] 21:19:25 Gateway     Connecting
+[2021/02/17 21:19:25:997] [INFO] 21:19:25 Gateway     Resumed previous session

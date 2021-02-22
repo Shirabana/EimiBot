@@ -149,7 +149,7 @@
     <Compile Include="FileInteraction.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Modules\AdminCommands.cs" />
-    <Compile Include="Modules\InteractionClass.cs" />
+    <Compile Include="Archive\InteractionClass.cs" />
     <Compile Include="Modules\LinkCommands.cs" />
     <Compile Include="Modules\MathCommands.cs" />
     <Compile Include="Modules\Commands.cs" />
