@@ -152,8 +152,8 @@ namespace EimiBot2.Modules
 
         }
 
-        [Command("prune", RunMode = RunMode.Async)]
-        [Summary("Prunes the messages (max 100) in the channel and places them into a log if a value is added")]
+        [Command("delete", RunMode = RunMode.Async)]
+        [Summary("Deletes the messages (max 100) in the channel and places them into a log if a value is added")]
         [RequireUserPermission(GuildPermission.Administrator)]
         [RequireUserPermission(GuildPermission.ManageGuild)]
         public async Task DeleteAndLog(params string[] args)
@@ -199,7 +199,7 @@ namespace EimiBot2.Modules
                 await ReplyAsync(replyMessage);
                 var response = await NextMessageAsync();
                 AdminCommands ac = new AdminCommands();
-                log.Info("Immediately after");
+                log.Debug("Immediately after");
 
                 if (ac.GetConfirmation(response.ToString()) == true)
                 {

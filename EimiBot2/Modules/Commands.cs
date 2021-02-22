@@ -37,7 +37,7 @@ namespace EimiBot2.Modules
 
             var admin = new EmbedFieldBuilder()
                 .WithName("Admin")
-                .WithValue("・prefix\n・prune");
+                .WithValue("・prefix\n・delete");
 
             eb.AddField(link);
             eb.AddField(fun);
