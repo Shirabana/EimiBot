@@ -9,6 +9,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+*.json
 token.config
 mysql.config
 */logs*

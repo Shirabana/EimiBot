@@ -80,7 +80,7 @@ namespace EimiBot2.Modules
         [Summary("Changes the prefix if there's an input")]
         [RequireUserPermission(GuildPermission.Administrator)]
         [RequireUserPermission(GuildPermission.ManageGuild)]
-        public async Task Prefix(params string[] args)
+        public async Task Prefix()
         {
             log.Info("Prefix function booted up.");
 
@@ -207,9 +207,11 @@ namespace EimiBot2.Modules
                     log.Info("Deleting and logging messages...");
 
                     FileInteraction fi = new FileInteraction();
-                    
+                    List<Messages> msgList = new List<Messages>(); // Make a new list to pass
+
                     foreach (var item in message)
                     {
+                        
                         if (item.Attachments.Count > 0)
                         {
                             fi.Logged("[" + item.Timestamp + "] " + "(" + item.Channel + ") " + item.Author + ": " + item.Content + "\n<" + item.Attachments.Count + " item(s) attached>");
@@ -225,6 +227,8 @@ namespace EimiBot2.Modules
                         }
                         else
                         {
+                            msgList.Add(new Messages(item.Author.ToString(), item.Timestamp.ToString(), item.Content)); // Add to the list
+
                             await item.DeleteAsync();
                             await Task.Delay(100);
                         }
