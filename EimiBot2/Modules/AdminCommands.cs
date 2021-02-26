@@ -163,12 +163,14 @@ namespace EimiBot2.Modules
             int result;
             bool validReturn;
             string replyMessage = "";
+            string[] parameters = args;
 
             log.Info("Starting up the Delete and Log function.");
 
-            if (args != null && args[0] != null && args[0] != "")
+            if (parameters.Length == 0)
             {
-                if (int.TryParse(args[0], out result) && Convert.ToInt32(args[0]) != 0)
+                parameters = new string[] { "100" };
+                if (int.TryParse(parameters[0], out result) && Convert.ToInt32(parameters[0]) != 0)
                 {
                     var input = result;
                     if (input > 100)

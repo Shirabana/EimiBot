@@ -8,14 +8,14 @@ namespace EimiBot2
 {
     public class Messages
     {
-        private string Guild { get; set; }
-        private string Channel { get; set; }
-        private int UserId { get; set; }
+        public string Guild { get; set; }
+        public string Channel { get; set; }
+        public int UserId { get; set; }
 
-        private string Author { get; set; }
-        private string Timestamp { get; set; }
-        private string MessageContent { get; set; }
-        private string[] ImageLocations { get; set; }
+        public string Author { get; set; }
+        public string Timestamp { get; set; }
+        public string MessageContent { get; set; }
+        public string[] ImageLocations { get; set; }
 
         public Messages()
         {
