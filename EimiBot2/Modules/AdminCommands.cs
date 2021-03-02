@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using Discord.Addons.Interactive;
 using MySql.Data.MySqlClient.Memcached;
+using Google.Apis.Discovery;
 
 namespace EimiBot2.Modules
 {
@@ -162,14 +163,23 @@ namespace EimiBot2.Modules
             IEnumerable<IMessage> message = await Context.Channel.GetMessagesAsync().FlattenAsync(); ;
             int result;
             bool validReturn;
+            bool withName = false;
             string replyMessage = "";
             string[] parameters = args;
+            string filename = "";
 
             log.Info("Starting up the Delete and Log function.");
 
             if (parameters.Length == 0)
             {
                 parameters = new string[] { "100" };
+                var input = parameters[0];
+                message = await Context.Channel.GetMessagesAsync(Convert.ToInt32(input)).FlattenAsync();
+                replyMessage = "Are you sure you want to delete " + input + " lines? [Y/N]";
+                validReturn = true;
+            }
+            else if (parameters.Length == 1)
+            {
                 if (int.TryParse(parameters[0], out result) && Convert.ToInt32(parameters[0]) != 0)
                 {
                     var input = result;
@@ -182,6 +192,29 @@ namespace EimiBot2.Modules
                     message = await Context.Channel.GetMessagesAsync(Convert.ToInt32(input)).FlattenAsync();
                     replyMessage = "Are you sure you want to delete " + input + " lines? [Y/N]";
                     validReturn = true;
+                }
+                else
+                {
+                    await ReplyAsync("Invalid input.");
+                    validReturn = false;
+                }
+            }
+            else if (parameters.Length == 2)
+            {
+                if (int.TryParse(parameters[0], out result) && Convert.ToInt32(parameters[0]) != 0)
+                {
+                    var input = result;
+                    filename = parameters[1];
+                    if (input > 100)
+                    {
+                        // Max number
+                        input = 100;
+                    }
+
+                    message = await Context.Channel.GetMessagesAsync(Convert.ToInt32(input)).FlattenAsync();
+                    replyMessage = "Are you sure you want to delete " + input + " lines? [Y/N]";
+                    validReturn = true;
+                    withName = true;
                 }
                 else
                 {
@@ -213,14 +246,26 @@ namespace EimiBot2.Modules
 
                     foreach (var item in message)
                     {
-                        
-                        if (item.Attachments.Count > 0)
+                        string lines;
+                        if (item.Attachments.Count > 0 && withName == true)
                         {
-                            fi.Logged("[" + item.Timestamp + "] " + "(" + item.Channel + ") " + item.Author + ": " + item.Content + "\n<" + item.Attachments.Count + " item(s) attached>");
+                            lines = "[" + item.Timestamp + "] " + "(" + item.Channel + ") " + item.Author + ": " + item.Content + "\n<" + item.Attachments.Count + " item(s) attached>";
+                            fi.Logged(lines, filename);
+                        }
+                        else if (item.Attachments.Count == 0 && withName == true)
+                        {
+                            lines = "[" + item.Timestamp + "] " + "(" + item.Channel + ") " + item.Author + ": " + item.Content;
+                            fi.Logged(lines, filename);
+                        }
+                        else if (item.Attachments.Count > 0 && withName == false)
+                        {
+                            lines = "[" + item.Timestamp + "] " + "(" + item.Channel + ") " + item.Author + ": " + item.Content + "\n<" + item.Attachments.Count + " item(s) attached>";
+                            fi.Logged(lines);
                         }
                         else
                         {
-                            fi.Logged("[" + item.Timestamp + "] " + "(" + item.Channel + ") " + item.Author + ": " + item.Content);
+                            lines = "[" + item.Timestamp + "] " + "(" + item.Channel + ") " + item.Author + ": " + item.Content;
+                            fi.Logged(lines);
                         }
 
                         if (item.Content.Contains("Deletion log") && item.Author.IsBot == true)
@@ -236,9 +281,19 @@ namespace EimiBot2.Modules
                         }
                     }
 
-                    string location = @"C:\Users\Amagi\source\repos\EimiBot\EimiBot2\logs\" + fi.GetDate() + "-deletionlogs.txt";
+                    if (withName == true)
+                    {
+                        string location = @"C:\Users\Amagi\source\repos\EimiBot\EimiBot2\logs\" + fi.GetDate() + "-deletionlogs - " + filename + ".txt";
 
-                    await Context.Channel.SendFileAsync(location, "Deletion log for " + fi.GetTimestamp());
+                        await Context.Channel.SendFileAsync(location, "Deletion log for " + fi.GetTimestamp() + ": " + filename);
+                    }
+                    else
+                    {
+                        string location = @"C:\Users\Amagi\source\repos\EimiBot\EimiBot2\logs\" + fi.GetDate() + "-deletionlogs.txt";
+
+                        await Context.Channel.SendFileAsync(location, "Deletion log for " + fi.GetTimestamp());
+                    }
+                    
                 }
                 else
                 {

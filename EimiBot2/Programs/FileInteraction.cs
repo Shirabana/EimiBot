@@ -27,5 +27,15 @@ namespace EimiBot2
                 file.WriteLine(toWrite);
             }
         }
+
+        public void Logged(string lines, string filename)
+        {
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\Amagi\source\repos\EimiBot\EimiBot2\logs\" + GetDate() + "-deletionlogs - " + filename +".txt", true))
+            {
+                string toWrite = lines;
+                Console.WriteLine(toWrite);
+                file.WriteLine(toWrite);
+            }
+        }
     }
 }
