@@ -315,5 +315,12 @@ namespace EimiBot2.Modules
       
         }
 
+        [Command("guildlog", RunMode = RunMode.Async)]
+        [Summary("Outputs guild log link")]
+        public async Task GuildLog()
+        {
+            await ReplyAsync("https://docs.google.com/spreadsheets/d/1h0z0V8gZYQUtCT7Kd70nHHfSfCHvd58RyM7ZaRKKkXA/edit?usp=sharing");
+        }
+
     }
 }
