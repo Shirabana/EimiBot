@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Discord.Addons.Interactive;
 using MySql.Data.MySqlClient.Memcached;
 using Google.Apis.Discovery;
+using EimiBot2.Programs;
 
 namespace EimiBot2.Modules
 {
@@ -272,6 +273,11 @@ namespace EimiBot2.Modules
                         {
                             log.Debug("Ignoring bot message");
                         }
+                        else if (item.Author.IsBot == true)
+                        {
+                            log.Debug("Ignoring bot message");
+                            await item.DeleteAsync();
+                        }
                         else
                         {
                             msgList.Add(new Messages(item.Author.ToString(), item.Timestamp.ToString(), item.Content)); // Add to the list
@@ -293,7 +299,12 @@ namespace EimiBot2.Modules
 
                         await Context.Channel.SendFileAsync(location, "Deletion log for " + fi.GetTimestamp());
                     }
-                    
+
+                    SheetsInteraction si = new SheetsInteraction();
+                    log.Debug(si.UpdateTab());
+                    log.Debug(si.EditData(msgList));
+                    log.Debug(si.AutoResize());
+
                 }
                 else
                 {

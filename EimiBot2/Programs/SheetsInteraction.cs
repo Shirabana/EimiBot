@@ -11,6 +11,8 @@ namespace EimiBot2.Programs
 {
     class SheetsInteraction
     {
+        private Logger log = new Logger();
+
         private string[] _scopes = { SheetsService.Scope.Spreadsheets };
         private string _applicationName = "EimiBot Project";
         private string _spreadsheetId = "1h0z0V8gZYQUtCT7Kd70nHHfSfCHvd58RyM7ZaRKKkXA";
@@ -40,6 +42,8 @@ namespace EimiBot2.Programs
         {
             GoogleConnection();
 
+            log.Info("Google Sheets connection successful.");
+
             // Add new Sheet
             string sheetName = string.Format("{0}/{1}/{2}", DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
             _sheetname = sheetName;
@@ -60,12 +64,78 @@ namespace EimiBot2.Programs
             return JsonConvert.SerializeObject(response);
         }
 
+        public string AutoResize()
+        {
+            log.Info("Auto resize function started up.");
+
+            // Get sheet name
+            string sheetName = string.Format("{0}/{1}/{2}", DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+            _sheetname = sheetName;
+            var addSheetRequest = new AddSheetRequest();
+            addSheetRequest.Properties = new SheetProperties();
+            addSheetRequest.Properties.Title = sheetName;
+            BatchUpdateSpreadsheetRequest batchUpdateSpreadsheetRequest = new BatchUpdateSpreadsheetRequest();
+            batchUpdateSpreadsheetRequest.Requests = new List<Request>();
+            batchUpdateSpreadsheetRequest.Requests.Add(new Request
+            {
+                AutoResizeDimensions = new AutoResizeDimensionsRequest()
+                {
+                    Dimensions = new DimensionRange()
+                    {
+                        SheetId = Convert.ToInt32(_spreadsheetId),
+                        Dimension = "COLUMNS",
+                        StartIndex = 0,
+                        EndIndex = 2
+                    }
+                }
+            });
+
+            log.Debug("Executing auto resize.");
+
+            var batchUpdateRequest = _sheetsService.Spreadsheets.BatchUpdate(batchUpdateSpreadsheetRequest, _spreadsheetId);
+
+            BatchUpdateSpreadsheetResponse response = batchUpdateRequest.Execute();
+
+            return JsonConvert.SerializeObject(response);
+        }
+
         public string EditData(List<Messages> msgList)
         {
+
+            log.Info("Editing sheet data.");
+
             string resp = "";
+
+            // Column Names
+            IList<Object> header = new List<Object>();
+            header.Add("Timestamp");
+            header.Add("Author");
+            header.Add("Message");
+            IList<IList<Object>> headerValues = new List<IList<Object>>();
+            headerValues.Add(header);
+
+            string range = _sheetname + "!A1:Y";
+
+            SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum valueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
+            SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum insertDataOption = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.INSERTROWS;
+            ValueRange requestBody = new ValueRange();
+            requestBody.Range = range;
+            requestBody.Values = headerValues;
+
+            SpreadsheetsResource.ValuesResource.AppendRequest request = _sheetsService.Spreadsheets.Values.Append(requestBody, _spreadsheetId, range);
+            request.ValueInputOption = valueInputOption;
+            request.InsertDataOption = insertDataOption;
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            AppendValuesResponse response = request.Execute();
+            // Data.AppendValuesResponse response = await request.ExecuteAsync();
+
+            resp = JsonConvert.SerializeObject(response);
 
             foreach (Messages m in msgList)
             {
+                range = _sheetname + "!A2:Y";
+
                 IList<Object> obj = new List<Object>();
                 obj.Add(m.Timestamp);
                 obj.Add(m.Author);
@@ -73,29 +143,19 @@ namespace EimiBot2.Programs
                 IList<IList<Object>> values = new List<IList<Object>>();
                 values.Add(obj);
 
-                // The A1 notation of a range to search for a logical table of data.
-                // Values will be appended after the last row of the table.
-                string range = _sheetname + "!A1:Y";
-
-                // How the input data should be interpreted.
-                SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum valueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
-
-                // How the input data should be inserted.
-                SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum insertDataOption = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.INSERTROWS;
-                ValueRange requestBody = new ValueRange();
+                valueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
+                insertDataOption = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.INSERTROWS;
+                requestBody = new ValueRange();
                 requestBody.Range = range;
                 requestBody.Values = values;
 
-                SpreadsheetsResource.ValuesResource.AppendRequest request = _sheetsService.Spreadsheets.Values.Append(requestBody, _spreadsheetId, range);
+                request = _sheetsService.Spreadsheets.Values.Append(requestBody, _spreadsheetId, range);
                 request.ValueInputOption = valueInputOption;
                 request.InsertDataOption = insertDataOption;
 
                 // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-                AppendValuesResponse response = request.Execute();
+                response = request.Execute();
                 // Data.AppendValuesResponse response = await request.ExecuteAsync();
-
-                // TODO: Change code below to process the `response` object:
-                // Console.WriteLine(JsonConvert.SerializeObject(response));
 
                 resp = JsonConvert.SerializeObject(response);
             }
