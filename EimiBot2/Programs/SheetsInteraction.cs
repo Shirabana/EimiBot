@@ -38,14 +38,14 @@ namespace EimiBot2.Programs
             });
         }
 
-        public string UpdateTab()
+        public string UpdateTab(string guildname)
         {
             GoogleConnection();
 
             log.Info("Google Sheets connection successful.");
 
             // Add new Sheet
-            string sheetName = string.Format("{0}/{1}/{2}", DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+            string sheetName = string.Format("{0}/{1}/{2} {3}", DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, guildname);
             _sheetname = sheetName;
             var addSheetRequest = new AddSheetRequest();
             addSheetRequest.Properties = new SheetProperties();
@@ -64,12 +64,12 @@ namespace EimiBot2.Programs
             return JsonConvert.SerializeObject(response);
         }
 
-        public string AutoResize()
+        public string AutoResize(string guildname)
         {
             log.Info("Auto resize function started up.");
 
             // Get sheet name
-            string sheetName = string.Format("{0}/{1}/{2}", DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+            string sheetName = string.Format("{0}/{1}/{2} {3}", DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, guildname);
             _sheetname = sheetName;
             var addSheetRequest = new AddSheetRequest();
             addSheetRequest.Properties = new SheetProperties();

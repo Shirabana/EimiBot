@@ -301,9 +301,9 @@ namespace EimiBot2.Modules
                     }
 
                     SheetsInteraction si = new SheetsInteraction();
-                    log.Debug(si.UpdateTab());
+                    log.Debug(si.UpdateTab(filename));
                     log.Debug(si.EditData(msgList));
-                    log.Debug(si.AutoResize());
+                    log.Debug(si.AutoResize(filename));
 
                 }
                 else
